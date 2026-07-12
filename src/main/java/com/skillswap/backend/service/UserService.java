@@ -11,6 +11,8 @@
 
 package com.skillswap.backend.service;
 
+import com.skillswap.backend.security.JwtUtil;
+import com.skillswap.backend.dto.LoginResponse;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
@@ -26,6 +28,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired
+    private JwtUtil jwtUtil;
     
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -98,7 +103,9 @@ public class UserService {
         User user = userRepository.findByEmail(email);
 
         if (user != null && passwordEncoder.matches(password, user.getPassword())) {
-            return "Login Successful";
+//            return "Login Successful";
+        	String token = jwtUtil.generateToken(user.getEmail());
+        	return token;
         }
 
         return "Invalid Email or Password";
